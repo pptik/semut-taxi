@@ -3,17 +3,20 @@ package pptik.id.semuttaxi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.loopj.android.http.RequestParams;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import pptik.id.semuttaxi.connections.httprequest.ConnectionHandler;
 import pptik.id.semuttaxi.connections.httprequest.RequestRest;
 import pptik.id.semuttaxi.setup.Constant;
@@ -26,28 +29,58 @@ public class LoginActivity extends AppCompatActivity implements ConnectionHandle
     private RequestParams mParams;
     private String TAG = this.getClass().getSimpleName();
 
+    @BindView(R.id.edit_credential)
+    EditText mEditCredential;
+    @BindView(R.id.edit_password)
+    EditText mEditPassword;
+    @BindView(R.id.button_login)
+    Button mButtonLogin;
+
+    String mRegex = "^\\+(?:[0-9] ?){6,14}[0-9]$";
+    Pattern pattern = Pattern.compile(mRegex);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
 
         mContext = this;
         mRequestRest = new RequestRest(mContext, this);
         mProgressDialog = new ProgressDialog(mContext);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Memuat ...");
+        mButtonLogin.setOnClickListener(view ->
+            login(
+                    mEditPassword.getText().toString(),
+                    isPhoneNumber(mEditCredential.getText().toString()) ? 1 : 0,
+                    mEditCredential.getText().toString()
+            )
+        );
+
+
+    }
+
+
+    private boolean isPhoneNumber(String number){
+        Matcher matcher = pattern.matcher(number);
+        return matcher.matches();
     }
 
 
     private void login(String pass, int loginType, String uniqueParam){
-        mParams = new RequestParams();
-        if(loginType == 0) mParams.put("Email", uniqueParam);
-        else mParams.put("Phonenumber", uniqueParam);
-        mParams.put("Password", pass);
-        mProgressDialog.show();
-        mRequestRest.post(Constant.REST_USER_LOGIN, mParams);
+        if(pass.equals("") || uniqueParam.equals("")){
+            Snackbar.make(mButtonLogin, "Kolom tidak boleh kosong", Snackbar.LENGTH_LONG).show();
+        }else {
+            mParams = new RequestParams();
+            if (loginType == 0) mParams.put("Email", uniqueParam);
+            else mParams.put("Phonenumber", uniqueParam);
+            mParams.put("Password", pass);
+            mProgressDialog.show();
+            mRequestRest.post(Constant.REST_USER_LOGIN, mParams);
+        }
     }
 
 
@@ -62,4 +95,6 @@ public class LoginActivity extends AppCompatActivity implements ConnectionHandle
                 break;
         }
     }
+
+
 }
