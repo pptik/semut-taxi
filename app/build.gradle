@@ -6,7 +6,7 @@ android {
     buildToolsVersion "25.0.0"
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
-        applicationId "id.blits.semut"
+        applicationId "id.tlits.taxi"
         minSdkVersion 16
         targetSdkVersion 25
         multiDexEnabled = true

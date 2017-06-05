@@ -36,6 +36,9 @@ public class Profile {
     @SerializedName("PoinLevel")
     @Expose
     private int poinLevel;
+    @SerializedName("ID_role")
+    @Expose
+    private int idRole;
     @SerializedName("AvatarID")
     @Expose
     private int avatarID;
@@ -58,6 +61,14 @@ public class Profile {
 
     public void setID(int iD) {
         this.iD = iD;
+    }
+
+    public int getIdRole(){
+        return idRole;
+    }
+
+    public void setIdRole(int idRole){
+        this.idRole = idRole;
     }
 
     public String getName() {

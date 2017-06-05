@@ -34,6 +34,7 @@ import co.ceryle.radiorealbutton.library.RadioRealButtonGroup;
 import project.bsts.semut.connections.rest.IConnectionResponseHandler;
 import project.bsts.semut.connections.rest.RequestRest;
 import project.bsts.semut.helper.PreferenceManager;
+import project.bsts.semut.ui.CommonAlerts;
 import project.bsts.semut.ui.LoadingIndicator;
 import project.bsts.semut.setup.Constants;
 import project.bsts.semut.ui.ShowSnackbar;
@@ -177,7 +178,12 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                 try {
                     JSONObject object = new JSONObject(pResult);
                     boolean success = (object.getBoolean("success"));
-                    if(success) populateUserData(object.getJSONObject("Profile").toString(), object.getString("SessionID"));
+                    if(success) {
+                        if(object.getJSONObject("Profile").getInt("ID_role") != 10){
+                            CommonAlerts.commonError(context, "Maaf, akun Anda tidak diizinkan menggunakan aplikasi ini");
+                        }
+                        else populateUserData(object.getJSONObject("Profile").toString(), object.getString("SessionID"));
+                    }
                     else new ShowSnackbar(loginBtn).show(object.getString("message"));
                 } catch (JSONException e) {
                     e.printStackTrace();
