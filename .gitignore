@@ -323,3 +323,6 @@ fabric.properties
 # modules.xml
 # .idea/misc.xml 
 # *.ipr
+
+/app/src/main/java/project/bsts/semut/setup/Constants.java
+/src/main/java/project/bsts/semut/setup/Constants.java
