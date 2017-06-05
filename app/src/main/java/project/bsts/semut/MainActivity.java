@@ -42,8 +42,7 @@ import project.bsts.semut.utilities.CustomDrawable;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.gridview)
-    GridView gridView;
+
     @BindView(R.id.switch_online)
     Switch switchOnline;
 
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         context = this;
 
@@ -113,35 +113,6 @@ public class MainActivity extends AppCompatActivity {
 
         new MainDrawer(context, toolbar, -1).initDrawer();
 
-
-        ArrayList<MainMenuObject> arrObj = new ArrayList<MainMenuObject>();
-
-        MainMenuObject object1 = new MainMenuObject();
-        object1.setTitle("Social \nReport");
-        object1.setClassIntent(SocialReportActivity.class);
-        object1.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_question_answer, 34, R.color.primary_dark));
-        arrObj.add(object1);
-
-        MainMenuObject object2 = new MainMenuObject();
-        object2.setTitle("Street \nCamera");
-        object2.setClassIntent(CityCctvActivity.class);
-        object2.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_videocam, 34, R.color.primary_dark));
-        arrObj.add(object2);
-
-        MainMenuObject object3 = new MainMenuObject();
-        object3.setTitle("Public \nTransport");
-        object3.setClassIntent(TransportationListActivity.class);
-        object3.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_directions_bus, 34, R.color.primary_dark));
-        arrObj.add(object3);
-
-        MainMenuObject object4 = new MainMenuObject();
-        object4.setTitle("Tombol \nDarurat");
-        object4.setClassIntent(EmergencyActivity.class);
-        object4.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_pan_tool, 34, R.color.primary_dark));
-        arrObj.add(object4);
-
-        MainMenuAdapter mainMenuAdapter = new MainMenuAdapter(context,arrObj);
-        gridView.setAdapter(mainMenuAdapter);
     }
 
 

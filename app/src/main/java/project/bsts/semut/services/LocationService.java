@@ -2,7 +2,11 @@ package project.bsts.semut.services;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -12,7 +16,10 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+
+import com.github.hynra.gsonsharedpreferences.GSONSharedPreferences;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -22,11 +29,16 @@ import com.google.gson.Gson;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.QueueingConsumer;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Random;
+import java.util.UUID;
 
+import project.bsts.semut.LoginActivity;
+import project.bsts.semut.OrderActivity;
 import project.bsts.semut.connections.broker.BrokerCallback;
 import project.bsts.semut.connections.broker.Config;
 import project.bsts.semut.connections.broker.Consumer;
@@ -35,6 +47,7 @@ import project.bsts.semut.connections.broker.Producer;
 import project.bsts.semut.helper.BroadcastManager;
 import project.bsts.semut.helper.JSONRequest;
 import project.bsts.semut.helper.PreferenceManager;
+import project.bsts.semut.pojo.Order;
 import project.bsts.semut.pojo.Profile;
 import project.bsts.semut.pojo.Session;
 import project.bsts.semut.setup.Constants;
@@ -109,7 +122,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 Log.i(TAG, "-------------------------------------");
                 Log.i(TAG, "incoming message type : "+delivery.getProperties().getType());
                 Log.i(TAG, "-------------------------------------");
-                Log.i(TAG, message);
+            //    Log.i(TAG, message);
                 broadCastMessage(delivery.getProperties().getType(), message);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -226,7 +239,36 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             case Constants.MQ_INCOMING_TYPE_MAPVIEW:
                 broadcastManager.sendBroadcastToUI(type, message);
                 break;
+            case Constants.MQ_INCOMING_TYPE_TAXI_REQUEST:
+                try {
+                    JSONObject object = new JSONObject(message);
+                    GSONSharedPreferences gsonSharedPreferences = new GSONSharedPreferences(getApplicationContext());
+                    Order order = new Gson().fromJson(object.getJSONObject("order").toString(), Order.class);
+                    gsonSharedPreferences.saveObject(order);
+                    if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 10) showNotification(order.getDestinationAddress());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
+    }
+
+    private void showNotification(String dest){
+        Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+        b.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(android.R.drawable.ic_dialog_map)
+                .setTicker("Pemesanan Taxi")
+                .setContentTitle("Pemesanan diterima")
+                .setContentText("Perjalanan ke : "+dest)
+                .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                .setContentIntent(contentIntent)
+                .setContentInfo("Order");
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(RandomUtils.nextInt(90, 9999), b.build());
     }
 
     //---------- mq

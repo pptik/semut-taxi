@@ -42,7 +42,7 @@ public class OrderActivity extends AppCompatActivity {
     @BindView(R.id.button_to_dest)
     Button buttonToDest;
     @BindView(R.id.text_dest)
-    Button textDest;
+    TextView textDest;
     @BindView(R.id.button_to_source)
     Button buttonToSource;
     @BindView(R.id.text_source)
@@ -59,13 +59,14 @@ public class OrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Order");
+        toolbar.setTitle("TLITS Taxi");
         toolbar.setSubtitle("Anda sedang dalam trip");
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
         context = this;
         preferenceManager = new PreferenceManager(context);
-        if(preferenceManager.getInt(Constants.IS_ONLINE, 0) != 11){
+        Log.i(TAG, "IS ONLINE : "+preferenceManager.getInt(Constants.IS_ONLINE, 0));
+        if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 10){
             ProgressDialog mProgressDialog = new ProgressDialog(context);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage("Memuat");
@@ -86,6 +87,8 @@ public class OrderActivity extends AppCompatActivity {
                         break;
                 }
             });
+            preferenceManager.save(11, Constants.IS_ONLINE);
+            preferenceManager.apply();
             mRest.updateOnlineStatus(11);
             mProgressDialog.show();
         }

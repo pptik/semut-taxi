@@ -44,10 +44,17 @@ public class SplashScreenActivity extends AppCompatActivity {
                 if (CheckService.isGpsEnabled(this)) {
                     PermissionHelper permissionHelper = new PermissionHelper(this);
                     if (permissionHelper.requestFineLocation()) {
-                        Intent intent = new Intent(this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
+                            Intent intent = new Intent(this, OrderActivity.class);
+                            startActivity(intent);
+                            finish();
+                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        }else {
+                            Intent intent = new Intent(this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        }
                     }
                 } else CommonAlerts.gspIsDisable(this);
             }else CommonAlerts.internetIsDisabled(this);

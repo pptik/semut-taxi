@@ -3,9 +3,9 @@
     <color name="colorPrimary">#F2F1EF</color>
     <color name="colorPrimaryBold">#EEEEEE</color>
     <color name="colorWhiteDark">#e7e9ea</color>
-    <color name="eucalyptus">#26A65B</color>
-    <color name="colorPrimaryDark">#ff8100</color>
-    <color name="colorAccent">#ff8100</color>
+    <color name="eucalyptus">#2574A9</color>
+    <color name="colorPrimaryDark">#1F3A93</color>
+    <color name="colorAccent">#4B77BE</color>
     <color name="colorSemiDarkPrimary">#af5900</color>
     <color name="facebookMainColor">#3b5998</color>
     <color name="foregroundLoading">#70000000</color>
