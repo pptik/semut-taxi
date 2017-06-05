@@ -7,7 +7,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.GridView;
+import android.widget.Switch;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 
@@ -17,7 +19,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import project.bsts.semut.adapters.MainMenuAdapter;
+import project.bsts.semut.helper.PreferenceManager;
 import project.bsts.semut.pojo.MainMenuObject;
+import project.bsts.semut.setup.Constants;
 import project.bsts.semut.ui.MainDrawer;
 import project.bsts.semut.utilities.CustomDrawable;
 
@@ -25,9 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.gridview)
     GridView gridView;
+    @BindView(R.id.switch_online)
+    Switch switchOnline;
 
     private Context context;
     private final String TAG = this.getClass().getSimpleName();
+    PreferenceManager mPreferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
+
+        mPreferenceManager = new PreferenceManager(context);
+
+        switchOnline.setChecked(mPreferenceManager.getBoolean(Constants.IS_TAXI_ONLINE));
+        switchOnline.setOnCheckedChangeListener((compoundButton, b) -> {
+
+        });
+
         new MainDrawer(context, toolbar, -1).initDrawer();
 
 

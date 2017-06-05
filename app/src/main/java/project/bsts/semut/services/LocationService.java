@@ -101,7 +101,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     private void consume(){
 
-        mqConsumer.setQueueName(profile.getID()+"-"+session.getSessionID());
+        mqConsumer.setQueueName(session.getSessionID());
         mqConsumer.subsribe();
         mqConsumer.setMessageListner(delivery -> {
             try {
