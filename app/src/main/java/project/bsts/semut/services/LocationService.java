@@ -109,7 +109,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 Log.i(TAG, "-------------------------------------");
                 Log.i(TAG, "incoming message type : "+delivery.getProperties().getType());
                 Log.i(TAG, "-------------------------------------");
-            //    Log.i(TAG, message);
+                Log.i(TAG, message);
                 broadCastMessage(delivery.getProperties().getType(), message);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
