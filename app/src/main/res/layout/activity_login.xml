@@ -37,6 +37,7 @@
                 android:id="@+id/signup_btn"
                 app:gTouchCornerRadius="12dp"
                 app:gTouchCornerRadiusTL="0dp"
+                android:visibility="gone"
                 app:gTouchCornerRadiusTR="0dp"
                 app:gTouchCornerRadiusBL="0dp"
                 app:gTouchCornerRadiusBR="0dp"
