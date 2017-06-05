@@ -33,9 +33,11 @@ import project.bsts.semut.connections.rest.RequestRest;
 import project.bsts.semut.helper.PreferenceManager;
 import project.bsts.semut.pojo.MainMenuObject;
 import project.bsts.semut.pojo.RequestStatus;
+import project.bsts.semut.services.LocationService;
 import project.bsts.semut.setup.Constants;
 import project.bsts.semut.ui.CommonAlerts;
 import project.bsts.semut.ui.MainDrawer;
+import project.bsts.semut.utilities.CheckService;
 import project.bsts.semut.utilities.CustomDrawable;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private RequestRest mRest;
     private ProgressDialog mProgressDialog;
     private final int NOTIFICATION_ID = 666;
+    private Intent locService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         context = this;
 
+        locService = new Intent(context, LocationService.class);
         mPreferenceManager = new PreferenceManager(context);
         mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setCancelable(false);
@@ -92,9 +96,17 @@ public class MainActivity extends AppCompatActivity {
             int state = (b) ? 10 : 0;
             if(b) showNotification();
             else cancelNotification();
-
             mPreferenceManager.save(state, Constants.IS_ONLINE);
             mPreferenceManager.apply();
+
+            if(state == 0){
+                if(CheckService.isLocationServiceRunning2(context))
+                    stopService(locService);
+            }else {
+                if(!CheckService.isLocationServiceRunning2(context))
+                    startService(locService);
+            }
+
             mRest.updateOnlineStatus(state);
             mProgressDialog.show();
         });
