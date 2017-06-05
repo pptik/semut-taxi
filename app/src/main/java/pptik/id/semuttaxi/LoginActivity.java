@@ -10,6 +10,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.github.hynra.gsonsharedpreferences.GSONSharedPreferences;
+import com.google.gson.Gson;
 import com.loopj.android.http.RequestParams;
 
 import java.util.regex.Matcher;
@@ -19,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pptik.id.semuttaxi.connections.httprequest.ConnectionHandler;
 import pptik.id.semuttaxi.connections.httprequest.RequestRest;
+import pptik.id.semuttaxi.models.Authentication;
 import pptik.id.semuttaxi.setup.Constant;
 
 public class LoginActivity extends AppCompatActivity implements ConnectionHandler.IConnectionResponseHandler {
@@ -83,6 +86,11 @@ public class LoginActivity extends AppCompatActivity implements ConnectionHandle
         }
     }
 
+    private void populateUserData(Authentication authentication){
+        GSONSharedPreferences gsonSharedPreferences = new GSONSharedPreferences(mContext);
+        gsonSharedPreferences.saveObject(authentication);
+        //toDashBoard();
+    }
 
     @Override
     public void onSuccessRequest(String pResult, String type) {
@@ -90,8 +98,13 @@ public class LoginActivity extends AppCompatActivity implements ConnectionHandle
         Log.i(TAG, pResult);
         switch (type){
             case Constant.REST_USER_LOGIN:
+                Log.i(TAG, pResult);
+                Authentication authentication = new Gson().fromJson(pResult, Authentication.class);
+                if(authentication.getSuccess()) populateUserData(authentication);
+                else Log.e(TAG, authentication.getMessage());
                 break;
             case Constant.REST_ERROR:
+
                 break;
         }
     }
