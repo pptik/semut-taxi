@@ -1,11 +1,16 @@
 package project.bsts.semut;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     PreferenceManager mPreferenceManager;
     private RequestRest mRest;
     private ProgressDialog mProgressDialog;
+    private final int NOTIFICATION_ID = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +85,16 @@ public class MainActivity extends AppCompatActivity {
         mRest.updateOnlineStatus(mPreferenceManager.getInt(Constants.IS_ONLINE, 0));
         mProgressDialog.show();
 
-        switchOnline.setChecked(mPreferenceManager.getBoolean(Constants.IS_ONLINE));
+        boolean checked = (mPreferenceManager.getInt(Constants.IS_ONLINE, 0) != 0);
+        switchOnline.setChecked(checked);
+
         switchOnline.setOnCheckedChangeListener((compoundButton, b) -> {
             int state = (b) ? 10 : 0;
+            if(b) showNotification();
+            else cancelNotification();
+
             mPreferenceManager.save(state, Constants.IS_ONLINE);
+            mPreferenceManager.apply();
             mRest.updateOnlineStatus(state);
             mProgressDialog.show();
         });
@@ -116,39 +128,33 @@ public class MainActivity extends AppCompatActivity {
         object4.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_pan_tool, 34, R.color.primary_dark));
         arrObj.add(object4);
 
-    /*    MainMenuObject object4 = new MainMenuObject();
-        object4.setTitle("Profile\n");
-        object4.setClassIntent(SocialReportActivity.class);
-        object4.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_account_circle, 34, R.color.primary_dark));
-        arrObj.add(object4);
-
-        MainMenuObject object5 = new MainMenuObject();
-        object5.setTitle("Friends\n");
-        object5.setClassIntent(SocialReportActivity.class);
-        object5.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_supervisor_account, 34, R.color.primary_dark));
-        arrObj.add(object5);
-
-        MainMenuObject object6 = new MainMenuObject();
-        object6.setTitle("Chat\n");
-        object6.setClassIntent(SocialReportActivity.class);
-        object6.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_chat, 34, R.color.primary_dark));
-        arrObj.add(object6);
-
-        MainMenuObject object7 = new MainMenuObject();
-        object7.setTitle("Personal \nPayment");
-        object7.setClassIntent(SocialReportActivity.class);
-        object7.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_account_balance_wallet, 34, R.color.primary_dark));
-        arrObj.add(object7);
-
-        MainMenuObject object8 = new MainMenuObject();
-        object8.setTitle("Settings\n");
-        object8.setClassIntent(SocialReportActivity.class);
-        object8.setIcon(CustomDrawable.create(context, GoogleMaterial.Icon.gmd_settings, 34, R.color.primary_dark));
-        arrObj.add(object8); */
-
         MainMenuAdapter mainMenuAdapter = new MainMenuAdapter(context,arrObj);
         gridView.setAdapter(mainMenuAdapter);
+    }
 
+
+    private void showNotification(){
+        Intent intent = new Intent(context, LoginActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(context);
+        b.setOngoing(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setTicker("TLITS Taxi")
+                .setContentTitle("TLITS Taxi")
+                .setContentText("TLITS Taxi sedang berjalan di background")
+                .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                .setContentIntent(contentIntent)
+                .setContentInfo("Info");
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, b.build());
+    }
+
+
+    private void cancelNotification(){
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(NOTIFICATION_ID);
     }
 
 }
