@@ -75,5 +75,6 @@ dependencies {
     compile 'com.github.ceryle:RadioRealButton:v1.4.4'
     compile 'com.wdullaer:materialdatetimepicker:2.5.0'
     compile 'com.android.support:multidex:1.0.1'
+    compile 'com.github.hynra:GSON-SharedPreferences:1.1'
     compile files('libs/libphonenumber-8.4.0.jar')
 }

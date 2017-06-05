@@ -13,4 +13,5 @@
     <string name="title_activity_angkot_tracker">Angkot Tracker</string>
     <string name="title_activity_signup">Daftar</string>
     <string name="title_activity_emergency">Emergency</string>
+    <string name="title_activity_order">OrderActivity</string>
 </resources>

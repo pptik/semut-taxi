@@ -115,6 +115,10 @@
         <activity
             android:name=".EmergencyActivity"
             android:label="@string/title_activity_emergency"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OrderActivity"
+            android:label="@string/title_activity_order"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

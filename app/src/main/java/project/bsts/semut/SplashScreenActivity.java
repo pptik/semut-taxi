@@ -15,6 +15,8 @@ import android.view.Window;
 import android.widget.Toast;
 
 import project.bsts.semut.helper.PermissionHelper;
+import project.bsts.semut.helper.PreferenceManager;
+import project.bsts.semut.setup.Constants;
 import project.bsts.semut.ui.CommonAlerts;
 import project.bsts.semut.utilities.CheckService;
 
@@ -23,6 +25,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private static final int SPLASH_TIME = 2 * 1000;// 3 * 1000
     private Context context;
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         context = this;
+        preferenceManager = new PreferenceManager(context);
 
         new Handler().postDelayed(() -> {
 
@@ -62,10 +66,17 @@ public class SplashScreenActivity extends AppCompatActivity {
             case PermissionHelper.REQUEST_ACCESS_FINE_LOCATION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.i(this.getClass().getSimpleName(), "Location granted");
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
+                        Intent intent = new Intent(this, OrderActivity.class);
+                        startActivity(intent);
+                        finish();
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    }else {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    }
                 } else {
                     Log.i(this.getClass().getSimpleName(), "Location Rejected");
                     Toast.makeText(context, "Maaf, Anda harus memberi izin lokasi kepada aplikasi untuk melanjutkan", Toast.LENGTH_LONG).show();
