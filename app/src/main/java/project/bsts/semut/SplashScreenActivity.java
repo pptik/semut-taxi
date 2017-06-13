@@ -1,7 +1,6 @@
 package project.bsts.semut;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +9,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.WindowManager;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import project.bsts.semut.helper.PermissionHelper;
@@ -20,12 +19,14 @@ import project.bsts.semut.setup.Constants;
 import project.bsts.semut.ui.CommonAlerts;
 import project.bsts.semut.utilities.CheckService;
 
+
 public class SplashScreenActivity extends AppCompatActivity {
 
 
     private static final int SPLASH_TIME = 2 * 1000;// 3 * 1000
     private Context context;
-    private PreferenceManager preferenceManager;
+    PreferenceManager preferenceManager;
+    PermissionHelper permissionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +43,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 
             if(CheckService.isInternetAvailable(context)) {
                 if (CheckService.isGpsEnabled(this)) {
-                    PermissionHelper permissionHelper = new PermissionHelper(this);
-                    if (permissionHelper.requestFineLocation()) {
+                    permissionHelper = new PermissionHelper(this);
+                    if (permissionHelper.requestFineLocation() && permissionHelper.requestWriteExternal() ) {
                         if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
                             Intent intent = new Intent(this, OrderActivity.class);
                             startActivity(intent);
@@ -71,6 +72,27 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PermissionHelper.REQUEST_ACCESS_FINE_LOCATION:
+                permissionHelper.requestWriteExternal();
+                /*if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.i(this.getClass().getSimpleName(), "Location granted");
+                    if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
+                        Intent intent = new Intent(this, OnTripActivity.class);
+                        startActivity(intent);
+                        finish();
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    }else {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    }
+                } else {
+                    Log.i(this.getClass().getSimpleName(), "Location Rejected");
+                    Toast.makeText(context, "Maaf, Anda harus memberi izin lokasi kepada aplikasi untuk melanjutkan", Toast.LENGTH_LONG).show();
+                } */
+
+                break;
+            case PermissionHelper.REQUEST_WRITE_EXTERNAL:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.i(this.getClass().getSimpleName(), "Location granted");
                     if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
@@ -87,14 +109,17 @@ public class SplashScreenActivity extends AppCompatActivity {
                 } else {
                     Log.i(this.getClass().getSimpleName(), "Location Rejected");
                     Toast.makeText(context, "Maaf, Anda harus memberi izin lokasi kepada aplikasi untuk melanjutkan", Toast.LENGTH_LONG).show();
+                    finish();
                 }
                 break;
         }
     }
 
+
+
     @Override
     public void onBackPressed() {
-       // this.finish();
+        // this.finish();
         super.onBackPressed();
     }
 }

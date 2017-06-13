@@ -67,7 +67,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:src="@mipmap/logo_kota"
+            android:src="@mipmap/logo_tlu"
+            />
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:src="@mipmap/lju_model"
             />
         <ImageView
             android:layout_gravity="center_vertical"

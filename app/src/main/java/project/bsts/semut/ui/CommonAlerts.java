@@ -89,4 +89,29 @@ public class CommonAlerts {
 
         alert.show();
     }
+
+
+
+    public static void writeExternalDisabled(Context context){
+        FancyAlertDialog.Builder alert = new FancyAlertDialog.Builder(context)
+                .setImageDrawable(new IconicsDrawable(context)
+                        .icon(GoogleMaterial.Icon.gmd_location_disabled)
+                        .sizeDp(100)
+                        .color(context.getResources().getColor(R.color.cochineal_red)))
+                .setTextTitle("WRITE EXTERNAL DISABLED")
+                //  .setTextSubTitle("Aplikasi membutuhkan lokasi Anda")
+                .setBody("Storage permission is required to store map tiles to reduce data usage and for offline usage. Location permission is required to show the user's location on map.")
+                .setAutoHide(false)
+                .setPositiveColor(R.color.primary_dark)
+                .setNegativeButtonText("Keluar")
+                .setOnNegativeClicked(((view, dialog) -> {
+                    ((Activity)context).finish();
+                }))
+                .build();
+
+
+        alert.show();
+    }
+
+
 }
