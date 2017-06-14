@@ -171,7 +171,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             Log.i(TAG, "LOCATION CONNECTED");
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             if (location == null) {
-              //  LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                Log.i(TAG, "LOCATION NULL");
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
             } else {
                 latitude = location.getLatitude();

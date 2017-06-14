@@ -134,7 +134,7 @@ public class GetLocation extends Service implements BrokerCallback {
 
     private void consume(){
 
-        mqConsumer.setQueueName(profile.getID()+"-"+session.getSessionID());
+        mqConsumer.setQueueName(session.getSessionID());
         mqConsumer.subsribe();
         mqConsumer.setMessageListner(delivery -> {
             try {
