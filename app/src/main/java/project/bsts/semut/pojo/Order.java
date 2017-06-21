@@ -8,6 +8,9 @@ public class Order {
     @SerializedName("order_date")
     @Expose
     private String orderDate;
+    @SerializedName("biaya")
+    @Expose
+    private String biaya;
     @SerializedName("user_queue")
     @Expose
     private String userQueue;
@@ -41,6 +44,11 @@ public class Order {
     @SerializedName("_id")
     @Expose
     private String id;
+
+
+    public String getBiaya(){return biaya;}
+
+    public void setBiaya(String biaya){this.biaya = biaya;}
 
     public String getOrderDate() {
         return orderDate;

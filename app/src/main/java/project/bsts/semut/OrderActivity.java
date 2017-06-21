@@ -47,6 +47,8 @@ public class OrderActivity extends AppCompatActivity {
     Button buttonToSource;
     @BindView(R.id.text_source)
     TextView textSource;
+    @BindView(R.id.text_estimate_cost)
+    TextView tEstimateCost;
 
     private String TAG = this.getClass().getSimpleName();
     private Context context;
@@ -59,7 +61,9 @@ public class OrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("TLITS Taxi");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setTitle("TL Taxi");
         toolbar.setSubtitle("Anda sedang dalam trip");
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
@@ -103,6 +107,7 @@ public class OrderActivity extends AppCompatActivity {
         textSource.setText(order.getSourceAddress());
         textDest.setText(order.getDestinationAddress());
         textEstimate.setText(""+order.getDistance()+"KM");
+        tEstimateCost.setText(""+order.getBiaya());
         textPemesan.setText(order.getRequestBy().getName());
 
         buttonToSource.setOnClickListener(view -> navigateTo(order.getSourceLat(), order.getSourceLon()));

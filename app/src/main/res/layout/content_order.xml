@@ -79,6 +79,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Estimasi Biaya : "
+                    style="@style/TextAppearance.AppCompat.Title"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.68KM"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/text_estimate_cost" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Nama Pemesan : "
                     style="@style/TextAppearance.AppCompat.Title"
                     />
