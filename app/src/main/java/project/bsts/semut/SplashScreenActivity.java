@@ -13,8 +13,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import project.bsts.semut.connections.rest.IConnectionResponseHandler;
+import project.bsts.semut.connections.rest.RequestRest;
 import project.bsts.semut.helper.PermissionHelper;
 import project.bsts.semut.helper.PreferenceManager;
+import project.bsts.semut.pojo.RequestStatus;
 import project.bsts.semut.setup.Constants;
 import project.bsts.semut.ui.CommonAlerts;
 import project.bsts.semut.utilities.CheckService;
@@ -45,17 +50,26 @@ public class SplashScreenActivity extends AppCompatActivity {
                 if (CheckService.isGpsEnabled(this)) {
                     permissionHelper = new PermissionHelper(this);
                     if (permissionHelper.requestFineLocation() && permissionHelper.requestWriteExternal() ) {
-                        if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
-                            Intent intent = new Intent(this, OrderActivity.class);
-                            startActivity(intent);
-                            finish();
-                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        }else {
-                            Intent intent = new Intent(this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        }
+                        RequestRest rest = new RequestRest(context, (pResult, type) -> {
+                            if(type.equals(Constants.REST_CHECK_SESSION)){
+                                Log.i("Santai", pResult);
+                                RequestStatus requestStatus = new Gson().fromJson(pResult, RequestStatus.class);
+                                if(requestStatus.getSuccess()){
+                                    if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
+                                        Intent intent = new Intent(this, OrderActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                    }else {
+                                        Intent intent = new Intent(this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                    }
+                                }else CommonAlerts.sessionDead(context);
+                            }
+                        });
+                        rest.checkSession();
                     }
                 } else CommonAlerts.gspIsDisable(this);
             }else CommonAlerts.internetIsDisabled(this);
@@ -95,17 +109,26 @@ public class SplashScreenActivity extends AppCompatActivity {
             case PermissionHelper.REQUEST_WRITE_EXTERNAL:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.i(this.getClass().getSimpleName(), "Location granted");
-                    if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
-                        Intent intent = new Intent(this, OrderActivity.class);
-                        startActivity(intent);
-                        finish();
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    }else {
-                        Intent intent = new Intent(this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    }
+                    RequestRest rest = new RequestRest(context, (pResult, type) -> {
+                        if(type.equals(Constants.REST_CHECK_SESSION)){
+                            Log.i("Santai", pResult);
+                            RequestStatus requestStatus = new Gson().fromJson(pResult, RequestStatus.class);
+                            if(requestStatus.getSuccess()){
+                                if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 11){
+                                    Intent intent = new Intent(this, OrderActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                }else {
+                                    Intent intent = new Intent(this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                }
+                            }else CommonAlerts.sessionDead(context);
+                        }
+                    });
+                    rest.checkSession();
                 } else {
                     Log.i(this.getClass().getSimpleName(), "Location Rejected");
                     Toast.makeText(context, "Maaf, Anda harus memberi izin lokasi kepada aplikasi untuk melanjutkan", Toast.LENGTH_LONG).show();

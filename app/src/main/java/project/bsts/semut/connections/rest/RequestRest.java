@@ -240,5 +240,42 @@ public class RequestRest extends ConnectionHandler {
     }
 
 
+    public void checkSession(){
+        Session session = new Gson().fromJson(preferenceManager.getString(Constants.PREF_SESSION_ID), Session.class);
+        RequestParams params = new RequestParams();
+        params.put("SessionID", session.getSessionID());
+
+        Log.i(TAG, params.toString());
+        post(Constants.REST_CHECK_SESSION, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                super.onStart();
+                Log.i(TAG, "Sending request");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(TAG, "Success");
+                responseHandler.onSuccessRequest(response.toString(), Constants.REST_CHECK_SESSION);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, e, errorResponse);
+                Log.e(TAG, "Failed");
+                responseHandler.onSuccessRequest(String.valueOf(statusCode), Constants.REST_ERROR);
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                Log.i(TAG, "Disconnected");
+            }
+
+        }, mClient);
+    }
+
+
 
 }
