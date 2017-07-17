@@ -220,7 +220,7 @@ public class RequestRest extends ConnectionHandler {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.i(TAG, "Success");
-                responseHandler.onSuccessRequest(response.toString(), Constants.REST_GET_ALL_CCTV);
+                responseHandler.onSuccessRequest(response.toString(), Constants.REST_USER_UPDATE_ONLINE_STATUS);
             }
 
             @Override

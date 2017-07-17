@@ -179,6 +179,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 longitude = location.getLongitude();
                 speed = location.getSpeed();
                 altitude = location.getAltitude();
+                preferenceManager.save((float)latitude, Constants.ENTITY_LATITUDE);
+                preferenceManager.save((float)longitude, Constants.ENTITY_LONGITUDE);
+                preferenceManager.apply();
                 startTask();
                 broadCastMessage(Constants.BROADCAST_MY_LOCATION, JSONRequest.myLocation(latitude, longitude));
                 try {

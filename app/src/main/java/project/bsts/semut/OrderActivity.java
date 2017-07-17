@@ -144,9 +144,32 @@ public class OrderActivity extends AppCompatActivity {
 
 
     private void finishTrip(){
-        preferenceManager.save(10, Constants.IS_ONLINE);
-        preferenceManager.apply();
-        finish();
+
+        ProgressDialog mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setMessage("Merubah status ...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+        RequestRest mRest = new RequestRest(context, (pResult, type) -> {
+            Log.i(TAG, type+" - "+pResult);
+            mProgressDialog.dismiss();
+            switch (type) {
+                case Constants.REST_USER_UPDATE_ONLINE_STATUS:
+                    RequestStatus requestStatus = new Gson().fromJson(pResult, RequestStatus.class);
+                    if (requestStatus.getSuccess()) {
+                        Log.i(TAG, requestStatus.getMessage());
+                        preferenceManager.save(10, Constants.IS_ONLINE);
+                        preferenceManager.apply();
+                        finish();
+                    } else CommonAlerts.commonError(context, requestStatus.getMessage());
+                    break;
+                case Constants.REST_ERROR:
+                    CommonAlerts.commonError(context, Constants.MESSAGE_HTTP_ERROR);
+                    break;
+            }
+        });
+
+        mRest.updateOnlineStatus(10);
+
     }
 
 }

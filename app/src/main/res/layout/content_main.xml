@@ -23,7 +23,7 @@
             android:src="@mipmap/logo_tlu"
             android:background="@drawable/bg_circle_bold"
             android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             />
@@ -40,7 +40,6 @@
         android:id="@+id/arrow"
         android:textColor="@color/lynchLight"
         android:layout_below="@id/logo"
-
         android:layout_centerHorizontal="true"
         />
     <RelativeLayout
@@ -49,13 +48,47 @@
         android:layout_width="match_parent"
         android:layout_centerVertical="true"
         android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TIDAK ADA ORDER"
-            android:layout_centerInParent="true"
-            />
 
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="15dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TIDAK ADA ORDER"
+                android:id="@+id/no_order"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="25dp"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:id="@+id/loadBar"
+                android:background="@drawable/bg_red_rounded"
+                android:padding="10dp"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressBar"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:progressDrawable="@drawable/circular_progress_bar"
+                    />
+                <TextView
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:text="Sedang memuat lokasi, perangkat tidak stabil dalam mengenali lokasi Anda. Memungkinkan aplikasi tidak berjalan dengan baik"
+                    />
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
     <LinearLayout
         android:layout_alignParentBottom="true"

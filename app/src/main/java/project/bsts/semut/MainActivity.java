@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -30,9 +31,11 @@ import butterknife.ButterKnife;
 import project.bsts.semut.adapters.MainMenuAdapter;
 import project.bsts.semut.connections.rest.IConnectionResponseHandler;
 import project.bsts.semut.connections.rest.RequestRest;
+import project.bsts.semut.helper.BroadcastManager;
 import project.bsts.semut.helper.PreferenceManager;
 import project.bsts.semut.pojo.MainMenuObject;
 import project.bsts.semut.pojo.RequestStatus;
+import project.bsts.semut.pojo.mapview.MyLocation;
 import project.bsts.semut.services.LocationService;
 import project.bsts.semut.setup.Constants;
 import project.bsts.semut.ui.CommonAlerts;
@@ -40,11 +43,13 @@ import project.bsts.semut.ui.MainDrawer;
 import project.bsts.semut.utilities.CheckService;
 import project.bsts.semut.utilities.CustomDrawable;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BroadcastManager.UIBroadcastListener {
 
 
     @BindView(R.id.switch_online)
     Switch switchOnline;
+    @BindView(R.id.loadBar)
+    LinearLayout locationErrorLayout;
 
     private Context context;
     private final String TAG = this.getClass().getSimpleName();
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private final int NOTIFICATION_ID = 666;
     private Intent locService;
+    private BroadcastManager broadcastManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +70,15 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         context = this;
+        locationErrorLayout.setVisibility(View.GONE);
 
         locService = new Intent(context, LocationService.class);
         mPreferenceManager = new PreferenceManager(context);
         mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Memuat");
+        broadcastManager = new BroadcastManager(context);
+        broadcastManager.subscribeToUi(this);
 
         mRest = new RequestRest(context, (pResult, type) -> {
             mProgressDialog.dismiss();
@@ -140,4 +150,28 @@ public class MainActivity extends AppCompatActivity {
         manager.cancel(NOTIFICATION_ID);
     }
 
+    @Override
+    public void onMessageReceived(String type, String msg) {
+        Log.i(TAG, "-------------------------------------");
+        Log.i(TAG, "Receive on UI : Type : "+type);
+        Log.i(TAG, msg);
+        switch (type) {
+            case Constants.BROADCAST_MY_LOCATION:
+                MyLocation myLocationObject = new Gson().fromJson(msg, MyLocation.class);
+                if(myLocationObject.getMyLatitude() == 0 || myLocationObject.getMyLongitude() == 0)
+                    locationErrorLayout.setVisibility(View.VISIBLE);
+                else {
+                    if(locationErrorLayout.getVisibility() == View.VISIBLE) locationErrorLayout.setVisibility(View.GONE);
+                }
+
+                break;
+        }
+    }
+
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        broadcastManager.unSubscribeToUi();
+    }
 }
