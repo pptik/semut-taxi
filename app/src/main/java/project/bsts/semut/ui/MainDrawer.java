@@ -4,6 +4,7 @@ package project.bsts.semut.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
@@ -125,11 +126,15 @@ public class MainDrawer {
 
                     switch ((int) drawerItem.getIdentifier()){
                         case 80:
-                            preferenceManager.save(false, Constants.IS_LOGGED_IN);
-                            preferenceManager.apply();
-                            Toast.makeText(context, "Signout berhasil", Toast.LENGTH_LONG).show();
-                            context.startActivity(new Intent(context, LoginActivity.class));
-                            ((Activity)context).finish();
+                            if(preferenceManager.getInt(Constants.IS_ONLINE, 0) == 10){
+                                Snackbar.make(toolbar, "Anda dalam keadaan online, silahkan OFFLINE terlebih dahulu sebelum melakukan proses Logout", Snackbar.LENGTH_LONG).show();
+                            }else {
+                                preferenceManager.save(false, Constants.IS_LOGGED_IN);
+                                preferenceManager.apply();
+                                Toast.makeText(context, "Signout berhasil", Toast.LENGTH_LONG).show();
+                                context.startActivity(new Intent(context, LoginActivity.class));
+                                ((Activity) context).finish();
+                            }
                             break;
                     }
                     return false;
